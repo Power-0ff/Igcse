@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/static/signup.css">
+    </head>
+    <body>
+        <div class="flashes">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        <form action="/sign_up" method="post">
+            <div class="block">
+                <div class="em"><input type = "email" name = "email" placeholder="Enter your Email" /></div>
+                <br>
+                <div class="nm"><input type = "text" name = "name" placeholder="Enter your Name"/></div>
+                <br>
+                <div class="pass"><input type = "password" name = "password" placeholder="Enter your Password"/></div>
+                <br>
+                <div class="conpas"><input type = "password" name = "confirmpassword" placeholder="Confirm your password"/></div>
+                <br>
+                <div class="sub"><input type = "submit" value = "Submit" placeholder="Let's Go!"/></div>
+                <br>
+            </div>
+        </form>
+    </body>
+</html>

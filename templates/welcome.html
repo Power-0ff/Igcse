@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE Exam Preparation Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>Welcome to Your IGCSE Success Hub</h1>
+        <p>Your comprehensive platform for IGCSE past papers, customized quizzes, GPA tracking, and insightful resources designed to support your academic journey.</p>
+        <div class="cta-buttons">
+            <a href="/login" class="btn primary">Login to Access Resources</a>
+            <a href="/sign_up" class="btn secondary">Sign Up and Start Learning</a>
+        </div>
+    </header>
+
+    <section class="highlights-wrapper">
+        <div class="features">
+            <h2>Platform Highlights</h2>
+            <p>Explore interactive resources that empower your academic journey and beyond!</p>
+            <div class="feature-container">
+                <div class="feature-box">
+                    <i class="icon book-icon"></i>
+                    <h3>Comprehensive Past Papers</h3>
+                    <p>Gain access to a curated collection of IGCSE past papers to test and refine your knowledge.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="icon mcq-icon"></i>
+                    <h3>MCQs & Practice Quizzes</h3>
+                    <p>Challenge yourself with multiple-choice questions and quizzes tailored to your level.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="icon gpa-icon"></i>
+                    <h3>GPA Calculator</h3>
+                    <p>Track your academic progress and calculate your GPA across subjects effortlessly.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="icon success-icon"></i>
+                    <h3>Study Tips & Resources</h3>
+                    <p>Get expert insights and resources to maximize your preparation for IGCSE success.</p>
+                </div>
+            </div>
+        </div>
+    </section>    
+
+    <section class="ban-container">
+        <div class="banner">
+            <h2>What Our Users Say</h2>
+            <div class="slider" style="--quantity: 5">
+                <div class="item" style="--position: 1">
+                    <p>"This platform <strong>transformed my preparation journey</strong>. It's intuitive and highly effective."</p>
+                </div>
+                <div class="item" style="--position: 2">
+                    <p>"An <strong>invaluable tool</strong> for students aiming to achieve their best. Highly recommended!"</p>
+                </div>
+                <div class="item" style="--position: 3">
+                    <p>"Beautifully designed and easy to navigate. Makes studying a seamless experience."</p>
+                </div>
+                <div class="item" style="--position: 4">
+                    <p>"The guidance and resources are <strong>incredibly insightful</strong> and well-organized."</p>
+                </div>
+                <div class="item" style="--position: 5">
+                    <p>"This site has empowered me with the tools to succeed. A must-have for any student."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CEO Spotlight Section -->
+    <section class="ceo-spotlight-wrapper">
+        <div class="ceo-spotlight">
+            <h2>CEO Spotlight</h2>
+            <p>Meet our dedicated leaders, Ahyan Khan and Ali Raza, who are passionately committed to transforming education and student success.</p>
+            <div class="ceo-container">
+                <div class="ceo-box ahyan-box">
+                    <div class="ceo-info">
+                        <h3>Ahyan Khan</h3>
+                        <p>Co-CEO</p>
+                        <blockquote>“Driven to empower students through innovative educational tools.”</blockquote>
+                        <p>With a strong background in educational technology, Ahyan is focused on creating impactful resources that make learning both effective and accessible.</p>
+                    </div>
+                </div>
+                <div class="ceo-box ali-box">
+                    <div class="ceo-info">
+                        <h3>Ali Raza</h3>
+                        <p>Co-CEO</p>
+                        <blockquote>“Committed to making quality education accessible for all.”</blockquote>
+                        <p>Ali is dedicated to developing personalized learning pathways and easy-to-use study tools that cater to each student’s unique needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Motivational Quote Section -->
+    <section class="quote-section">
+        <blockquote>"Success is not the key to happiness. Happiness is the key to success." - Albert Schweitzer</blockquote>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2023 IGCSE Exam Preparation Portal</p>
+        <nav>
+            <div class="navlnk">
+                <a href="/about">About Us</a> |
+                <a href="/contact">Contact</a> |
+                <a href="/faq">FAQ</a> |
+                <a href="/resources">Resources</a> |
+                <a href="/blog">Blog</a>
+            </div>
+        </nav>
+        <div class="footer-socials">
+            <a href="https://facebook.com"><img src="/imgs/mta.png" alt="Facebook"></a>
+            <a href="https://twitter.com"><img src="/imgs/twtr.png" alt="Twitter"></a>
+            <a href="https://instagram.com"><img src="/imgs/instg.png" alt="Instagram"></a>
+        </div>
+        <form class="newsletter" aria-label="Newsletter Subscription">
+            <label for="email">Sign up for our newsletter</label>
+            <input type="email" id="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+        </form>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

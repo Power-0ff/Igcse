@@ -1,0 +1,8 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #e7dffa;
+    background-image: linear-gradient(to right, purple, rgb(59, 14, 105), rgb(38, 38, 123));
+}

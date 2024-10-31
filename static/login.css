@@ -14,6 +14,7 @@ body {
 /* Flash Messages */
 .flashes {
     width: 100%;
+    max-width: 400px;
     text-align: center;
 }
 
@@ -30,7 +31,7 @@ body {
 
 /* Only show border when there is a message */
 .has-message .flash-message {
-    border: 2px solid #FF9E80; /* Light coral border */
+    border: 2px solid #ff6233; /* Light coral border */
 }
 
 

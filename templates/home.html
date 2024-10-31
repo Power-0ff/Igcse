@@ -3,10 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/home.css"></a>
-    <title>Document</title>
+    <title>Instagram Home</title>
+    <link rel="stylesheet" href="/static/home.css">
 </head>
 <body>
-    <div class="container"></div>
+    <header>
+        <div class="header-container">
+            <div class="logo">InstaClone</div>
+            <div class="search-box">
+                <input type="text" placeholder="Search">
+            </div>
+            <div class="nav-icons">
+                <a href="#"><img src="home-icon.png" alt="Home"></a>
+                <a href="#"><img src="message-icon.png" alt="Messages"></a>
+                <a href="#"><img src="explore-icon.png" alt="Explore"></a>
+                <a href="#"><img src="like-icon.png" alt="Likes"></a>
+                <a href="#"><img src="profile-icon.png" alt="Profile"></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="feed">
+            <div class="post">
+                <div class="post-header">
+                    <img src="user1.jpg" alt="User1" class="profile-pic">
+                    <span class="username">user1</span>
+                </div>
+                <img src="post1.jpg" alt="Post Image" class="post-image">
+                <div class="post-actions">
+                    <img src="like-icon.png" alt="Like">
+                    <img src="comment-icon.png" alt="Comment">
+                    <img src="share-icon.png" alt="Share">
+                </div>
+                <div class="post-caption">
+                    <span class="username">user1</span> Loved this view! #nature #travel
+                </div>
+                <div class="post-comments">
+                    <span class="comment"><strong>user2</strong> Beautiful scenery!</span>
+                </div>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <div class="user-info">
+                <img src="user-profile.jpg" alt="User Profile" class="profile-pic">
+                <div class="username">current_user</div>
+                <div class="view-profile"><a href="#">View Profile</a></div>
+            </div>
+            <div class="suggestions">
+                <h3>Suggestions for you</h3>
+                <div class="suggestion">
+                    <img src="user3.jpg" alt="User3" class="profile-pic">
+                    <span class="username">user3</span>
+                    <button>Follow</button>
+                </div>
+            </div>
+        </aside>
+    </main>
 </body>
 </html>

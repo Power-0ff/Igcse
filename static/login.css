@@ -11,18 +11,28 @@ body {
     flex-direction: column;
 }
 
+/* Flash Messages */
 .flashes {
     width: 100%;
-    max-width: 400px;
-    margin-bottom: 1rem;
-    border: #4F2804 2px solid;
-    background: linear-gradient(135deg, #ff9853, #d65500);
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
+    text-align: center;
 }
+
+.flash-message {
+    background-color: #FFB07C; /* Vibrant peach accent */
+    color: #4F2804; /* Deep brown text for contrast */
+    padding: 1rem;
+    margin: 0;
+    border-radius: 8px;
+    font-weight: bold;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Only show border when there is a message */
+.has-message .flash-message {
+    border: 2px solid #FF9E80; /* Light coral border */
+}
+
 
 .block {
     background-color: #FFE6C7; /* Slightly darker peach for form block */
@@ -31,14 +41,6 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
-    text-align: center;
-}
-
-/* Flash Messages */
-.flashes p {
-    color: #4F2804;
-    border-radius: 8px;
-    font-weight: bold;
     text-align: center;
 }
 

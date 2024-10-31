@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/static/login.css">
-    </head>
-    <body>
-        <div class="flashes">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="flashes {% if messages %}has-message{% endif %}">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                    <p>{{ message }}</p>
+                        <p class="flash-message">{{ message }}</p>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
         </div>
         <div class="block">
             <form action="/login" method="post">
-                <div class="em"><input type = "email" name = "email" placeholder="Enter Your Email" /></div>
-                <div class="pass"><input type = "password" name = "password" placeholder="Enter Your Password" /></div>
-                <div class="sub"><input type = "submit" value = "Submit" /></div>
+                <div class="em"><input type="email" name="email" placeholder="Enter Your Email" /></div>
+                <div class="pass"><input type="password" name="password" placeholder="Enter Your Password" /></div>
+                <div class="sub"><input type="submit" value="Submit" /></div>
                 <br>
-                <div class="slink"><a href="/sign_up">Dont Have an account? Sign up</a></div>
+                <div class="slink"><a href="/sign_up">Don't Have an account? Sign up</a></div>
             </form>
         </div>
-    </body>
+    </div>
+</body>
 </html>

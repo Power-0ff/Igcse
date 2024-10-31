@@ -1,44 +1,99 @@
-.block{
-    height: 370px;
-    width: 310px;
-    background-image: rgb(255, 251, 245);
+/* General Layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFEDD5; /* Soft peach background */
+    color: #4F2804; /* Deep brown for text */
     display: flex;
-    justify-content: center;
     align-items: center;
-    border-radius: 50px;
-    -webkit-border-radius: 50px;
-    -moz-border-radius: 50px;
-    -ms-border-radius: 50px;
-    -o-border-radius: 50px;
-    border:5px, solid, #ede7fe;
-}
-body{
-    display: flex;
     justify-content: center;
-    min-height: 100vh;
-    background: rgb(253, 255, 241);
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
 }
-.block input{
+
+.flashes {
     width: 100%;
-    height: 100%;
-    border: 3px, solid, rgb(255, 255, 255);
+    max-width: 400px;
+    margin-bottom: 1rem;
+    border: #4F2804 2px solid;
+    background: linear-gradient(135deg, #ff9853, #d65500);
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
-    box-shadow: #ffffff;
 }
-.slink{
-    width: 110%;
-    height: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: azure;
-    border-radius: 100px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    -ms-border-radius: 100px;
-    -o-border-radius: 100px;
+
+.block {
+    background-color: #FFE6C7; /* Slightly darker peach for form block */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Flash Messages */
+.flashes p {
+    color: #4F2804;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Form Elements */
+input[type="email"],
+input[type="password"],
+input[type="submit"] {
+    font-size: 1rem;
+    padding: 0.75rem;
+    border: 2px solid #FF9E80; /* Light coral border */
+    border-radius: 8px;
+    outline: none;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #F78154; /* Vibrant accent for focus */
+    box-shadow: 0 0 8px rgba(247, 129, 84, 0.4);
+}
+
+input[type="submit"] {
+    background-color: #F96A50; /* Bright button color */
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #F45131; /* Darker accent on hover */
+}
+
+/* Link Styling */
+.slink a {
+    color: #F96A50; /* Bright peach accent for links */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.slink a:hover {
+    color: #F45131; /* Darker peach accent on hover */
+    text-decoration: underline;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 500px) {
+    .block, .flashes {
+        width: 90%;
+        padding: 1.5rem;
+    }
+    input[type="email"],
+    input[type="password"],
+    input[type="submit"] {
+        font-size: 0.9rem;
+    }
 }

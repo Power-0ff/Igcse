@@ -55,4 +55,4 @@ def redir():
     return redirect(url_for("welcome"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="/static/login.css">
     </head>
     <body>
-        <div class="flashes"></div>
+        <div class="flashes">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}

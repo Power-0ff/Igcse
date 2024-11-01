@@ -54,5 +54,25 @@ def logout():
 def redir():
     return redirect(url_for("welcome"))
 
+@app.route('/reviews')
+def logout():
+    return redirect(url_for("sign_up"))
+
+@app.route('/verifyuser')
+def logout():
+    return redirect(url_for("sign_up"))
+
+@app.route('/onboarding')
+def logout():
+    return redirect(url_for("sign_up"))
+
+@app.route('/agreements')
+def logout():
+    return redirect(url_for("sign_up"))
+
+@app.route('/settings')
+def logout():
+    return redirect(url_for("sign_up"))
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

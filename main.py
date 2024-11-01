@@ -55,23 +55,23 @@ def redir():
     return redirect(url_for("welcome"))
 
 @app.route('/reviews')
-def logout():
+def reviews():
     return redirect(url_for("reviews"))
 
 @app.route('/verifyuser')
-def logout():
+def verifyemail():
     return redirect(url_for("emailverification"))
 
 @app.route('/onboarding')
-def logout():
+def onboardroute():
     return redirect(url_for("onboarding"))
 
 @app.route('/agreements')
-def logout():
+def termsagreements():
     return redirect(url_for("terms"))
 
 @app.route('/settings')
-def logout():
+def settings():
     return redirect(url_for("settings"))
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 /* Basic Page Styling */
 body {
     font-family: Arial, sans-serif;
-    background-color: #FAF3E0;
+    background-color: #CD8B76;
     color: #333;
     margin: 0;
     padding: 0;
@@ -19,12 +19,12 @@ body {
     overflow: scroll;
     scroll-behavior: smooth;
     scrollbar-color: grey;
-    background-color: #FFFFFF;
+    scrollbar-width: 2px;
+    background-color: #E1D89F;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     line-height: 1.6;
-    background-color: aqua;
 }
 
 /* Headings */

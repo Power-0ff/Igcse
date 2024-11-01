@@ -56,23 +56,23 @@ def redir():
 
 @app.route('/reviews')
 def reviews():
-    return redirect(url_for("reviews"))
+    return render_template("reviews")
 
 @app.route('/verifyuser')
 def verifyemail():
-    return redirect(url_for("emailverification"))
+    return render_template("emailverification")
 
 @app.route('/onboarding')
 def onboardroute():
-    return redirect(url_for("onboarding"))
+    return render_template("onboarding")
 
 @app.route('/agreements')
 def termsagreements():
-    return redirect(url_for("terms"))
+    return render_template("terms")
 
 @app.route('/settings')
 def settings():
-    return redirect(url_for("settings"))
+    return render_template("settings")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

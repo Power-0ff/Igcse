@@ -1,8 +1,158 @@
-body{
+/* home.css */
+
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFE5D9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #FFC4B3;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    min-height: 100vh;
-    background: #e7dffa;
-    background-image: linear-gradient(to right, purple, rgb(59, 14, 105), rgb(38, 38, 123));
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #5D4037;
+}
+
+.search-box input[type="text"] {
+    padding: 8px;
+    border: 1px solid #FFAB91;
+    border-radius: 20px;
+    outline: none;
+    width: 150px;
+    transition: width 0.3s ease;
+}
+
+.search-box input[type="text"]:focus {
+    width: 200px;
+}
+
+.nav-icons a img {
+    width: 24px;
+    margin: 0 10px;
+    filter: brightness(0) saturate(100%) invert(34%) sepia(19%) saturate(374%) hue-rotate(321deg) brightness(96%) contrast(87%);
+}
+
+main {
+    display: flex;
+    margin: 20px;
+}
+
+.feed {
+    flex: 2;
+}
+
+.post {
+    background-color: #FFFFFF;
+    border: 1px solid #FFC4B3;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username {
+    font-weight: bold;
+    color: #5D4037;
+}
+
+.post-image {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.post-actions img {
+    width: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    filter: brightness(0) saturate(100%) invert(34%) sepia(19%) saturate(374%) hue-rotate(321deg) brightness(96%) contrast(87%);
+}
+
+.sidebar {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.user-info, .suggestions {
+    background-color: #FFFFFF;
+    border: 1px solid #FFC4B3;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.user-info .username {
+    font-weight: bold;
+    color: #5D4037;
+    margin-top: 10px;
+}
+
+.view-profile a {
+    text-decoration: none;
+    color: #FF8A65;
+    font-size: 0.9em;
+}
+
+.suggestions h3 {
+    color: #5D4037;
+    font-size: 1.2em;
+}
+
+.suggestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.suggestion .profile-pic {
+    width: 30px;
+    height: 30px;
+}
+
+.suggestion .username {
+    color: #5D4037;
+}
+
+.suggestion button {
+    background-color: #FF8A65;
+    border: none;
+    padding: 5px 10px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.suggestion button:hover {
+    background-color: #FF7043;
 }

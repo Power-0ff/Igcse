@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .block {
     height: 370px;
     width: 310px;
@@ -25,4 +26,77 @@ body {
     border: 3px solid rgb(78, 78, 183);
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(129, 97, 199, 0.5);
+=======
+/* signup.css */
+
+body {
+    background-color: #FFEDDA; /* Soft peach background */
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.flashes {
+    text-align: center;
+    color: #FF6F3C; /* Bright orange for flash messages */
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+form {
+    background-color: #FFF5EC; /* Light peach for the form container */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px 40px;
+    max-width: 400px;
+    width: 100%;
+}
+
+form .block {
+    display: flex;
+    flex-direction: column;
+}
+
+form input[type="email"],
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #FFA07A; /* Light orange border */
+    border-radius: 5px;
+    background-color: #FFE5D4; /* Lighter peach for inputs */
+    font-size: 1em;
+    color: #333;
+}
+
+form input[type="submit"] {
+    background-color: #FF6F3C; /* Bright orange for submit button */
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #E65C25; /* Darker shade of orange on hover */
+}
+
+input::placeholder {
+    color: #FF8C5A; /* Soft orange for placeholder text */
+}
+
+@media (max-width: 600px) {
+    form {
+        padding: 15px 20px;
+    }
+>>>>>>> 6efaf37e3a824bf178b7fd4a1ea8424f6a35a494
 }

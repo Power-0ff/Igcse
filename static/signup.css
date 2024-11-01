@@ -23,6 +23,7 @@ body {
 /* Form Container */
 .block {
     background-color: #FFE6C7;
+    padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     max-width: 400px;
@@ -48,7 +49,7 @@ input[type="submit"] {
     border: 2px solid #FF9E80; /* Light coral border */
     border-radius: 8px;
     outline: none;
-    width: 100%;
+    width: 350px;
     margin-bottom: 1rem;
 }
 

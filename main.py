@@ -56,23 +56,23 @@ def redir():
 
 @app.route('/reviews')
 def logout():
-    return redirect(url_for("sign_up"))
+    return redirect(url_for("reviews"))
 
 @app.route('/verifyuser')
 def logout():
-    return redirect(url_for("sign_up"))
+    return redirect(url_for("emailverification"))
 
 @app.route('/onboarding')
 def logout():
-    return redirect(url_for("sign_up"))
+    return redirect(url_for("onboarding"))
 
 @app.route('/agreements')
 def logout():
-    return redirect(url_for("sign_up"))
+    return redirect(url_for("terms"))
 
 @app.route('/settings')
 def logout():
-    return redirect(url_for("sign_up"))
+    return redirect(url_for("settings"))
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

@@ -5,6 +5,7 @@ import hashlib
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import random
 
 app = Flask(__name__)
 app.secret_key = '@FABRIC'
@@ -17,7 +18,7 @@ def sendemail(receiver_email, message):
     msg['From'] = sender_email
     msg['To'] = receiver_email
     msg['Subject'] = "Function Call Notification"
-    msg.attach(MIMEText(message, 'plain'))
+    msg.attach(MIMEText(message, 'html'))
 
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
@@ -78,13 +79,76 @@ def logout():
 def redir():
     return redirect(url_for("welcome"))
 
+@app.route('/verify')
+def verify():
+    email = session["email"]
+    verifycode = random.randint(10000, 9999999)
+    code = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }}
+        .container {{
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }}
+        h1 {{
+            color: #007BFF;
+            text-align: center;
+        }}
+        p {{
+            line-height: 1.6;
+            color: #333;
+        }}
+        .code {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            margin: 20px 0;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CPAL Verification</h1>
+        <p>Dear User,</p>
+        <p>Thank you for choosing CPAL. To complete your registration, please use the verification code below:</p>
+        <div class="code">{verifycode}</div>
+        <p>If you did not request this code, please ignore this email.</p>
+        <p>Best regards,<br>CPAL Team</p>
+    </div>
+    <div class="footer">
+        &copy; {2024} CPAL. All rights reserved.
+    </div>
+</body>
+</html>
+"""
+    sendemail(email, code)
+    return render_template("emailverification.html")
+
 @app.route('/reviews')
 def reviews():
     return render_template("reviews.html")
-
-@app.route('/verifyuser')
-def verifyemail():
-    return render_template("emailverification.html")
 
 @app.route('/onboarding')
 def onboardroute():

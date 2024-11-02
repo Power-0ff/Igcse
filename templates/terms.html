@@ -60,10 +60,16 @@
         <h2>10. Changes to Terms and Conditions</h2>
         <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
 
-        <h2>11. Contact Us</h2>
-        <p>If you have any questions about these Terms, please contact us at:</p>
-        <p>Email: [Your Email Address]<br>
-           Address: [Your Physical Address, if applicable]</p>
+        <form action="/agreements" method="post">
+            <div class="accept-section">
+                <label>
+                    <input type="checkbox" name="accept_terms" required>
+                    I have read and accept the Terms and Conditions
+                </label>
+                <br><br>
+                <button type="submit">Accept and Continue</button>
+            </div>
+        </form>
     </div>
 </body>
 </html>

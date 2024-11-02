@@ -24,7 +24,7 @@ def sign_up():
             VALUES (?, ?, ?, ?)''', (name, email, password, ip))
             con.commit()
             con.close()
-            return redirect(url_for('home'))
+            return redirect(url_for('termsagreements'))
     return render_template('sign_up.html')
 
 @app.route('/login', methods = ["POST", "GET"])
@@ -66,8 +66,10 @@ def verifyemail():
 def onboardroute():
     return render_template("onboarding.html")
 
-@app.route('/agreements')
+@app.route('/agreements', methods = ["POST", "GET"])
 def termsagreements():
+    if request.method == "POST":
+        return redirect(url_for('home'))
     return render_template("terms.html")
 
 @app.route('/settings')

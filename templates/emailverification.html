@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>Verify Your Code</title>
 </head>
 <body>
-    
+    <div class="container">
+        <h1>Verification Code</h1>
+        <p>Please enter the verification code sent to your email.</p>
+        <form action="/verify" method="POST">
+            <input type="text" name="verification_code" placeholder="Enter your code" required>
+            <button type="submit">Verify</button>
+        </form>
+    </div>
 </body>
 </html>

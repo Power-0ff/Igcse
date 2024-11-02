@@ -48,7 +48,7 @@ def sign_up():
             con.close()
             session['name'] = name
             session['email'] = email
-            return redirect(url_for('termsagreements'))
+            return redirect(url_for('verify'))
     return render_template('sign_up.html')
 
 @app.route('/login', methods = ["POST", "GET"])

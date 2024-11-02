@@ -2,9 +2,30 @@ from flask import Flask, render_template, session, url_for, redirect, request, f
 import auth
 import sqlite3
 import hashlib
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 app.secret_key = '@FABRIC'
+
+def sendemail(receiver_email, message):
+    sender_email = "cpal.teams@gmail.com"
+    password = "wstl epmt cehp sqfd"
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = "Function Call Notification"
+    msg.attach(MIMEText(message, 'plain'))
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+        print("Email sent successfully.")
+    except Exception as e:
+        print("Failed to send email:", e)
 
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():

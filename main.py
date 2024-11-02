@@ -24,6 +24,8 @@ def sign_up():
             VALUES (?, ?, ?, ?)''', (name, email, password, ip))
             con.commit()
             con.close()
+            session['name'] = name
+            session['email'] = email
             return redirect(url_for('termsagreements'))
     return render_template('sign_up.html')
 
@@ -35,6 +37,7 @@ def login():
         email = request.form['email']
         Token = auth.authenticate_login(password, email)
         if Token:
+            session['email'] = email
             return redirect(url_for('home'))
     return render_template('login.html')
 

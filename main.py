@@ -79,7 +79,7 @@ def logout():
 def redir():
     return redirect(url_for("welcome"))
 
-@app.route('/verify')
+@app.route('/verify', methods = ["POST", "GET"])
 def verify():
     email = session["email"]
     verifycode = random.randint(10000, 9999999)
@@ -144,6 +144,12 @@ def verify():
 </html>
 """
     sendemail(email, code)
+    print(entered_code, verifycode)
+    if request.method == "POST":
+        entered_code = request.form['verification_code']
+        print(entered_code, verifycode)
+        if entered_code == verifycode:
+            return redirect(url_for("home"))
     return render_template("emailverification.html")
 
 @app.route('/reviews')

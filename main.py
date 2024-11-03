@@ -105,7 +105,7 @@ def onboarding():
         subjects = request.form.getlist('subjects')
         preferred_study_method = request.form.get('study_method')
         study_hours = request.form.get('study_hours')
-
+        return redirect(url_for('home'))
     return render_template('onboarding.html')
 
 @app.route('/agreements', methods = ["POST", "GET"])

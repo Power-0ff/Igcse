@@ -18,6 +18,7 @@ def sign_up():
         confirmpassword = request.form['confirmpassword']
         email = request.form['email']
         ip = request.remote_addr
+        session["ip"] = ip
         token = auth.authorize_sign_up(password, confirmpassword, email)
         if token:
             password = hashlib.sha256(password.encode()).hexdigest()
@@ -33,6 +34,8 @@ def sign_up():
 
 @app.route('/login', methods = ["POST", "GET"])
 def login():
+    ip = request.remote_addr
+    session["ip"] = ip
     if request.method == "POST" and 'email' in request.form and 'password' in request.form:
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
@@ -49,6 +52,8 @@ def welcome():
 
 @app.route('/home')
 def home():
+    if "ip" not in session:
+        return redirect(url_for("login"))
     return render_template('home.html')
 
 @app.route('/logout')
@@ -58,9 +63,6 @@ def logout():
 @app.route('/')
 def redir():
     return redirect(url_for("welcome"))
-
-from flask import session, redirect, url_for, render_template, request
-import random
 
 @app.route('/verify', methods=["POST", "GET"])
 def verify():
@@ -87,20 +89,28 @@ def verify():
 
 @app.route('/reviews')
 def reviews():
+    if "ip" not in session:
+        return redirect(url_for("login"))
     return render_template("reviews.html")
 
 @app.route('/onboarding')
 def onboardroute():
+    if "ip" not in session:
+        return redirect(url_for("login"))
     return render_template("onboarding.html")
 
 @app.route('/agreements', methods = ["POST", "GET"])
 def termsagreements():
+    if "ip" not in session:
+        return redirect(url_for("login"))
     if request.method == "POST":
         return redirect(url_for('home'))
     return render_template("terms.html")
 
 @app.route('/settings')
 def settings():
+    if "ip" not in session:
+        return redirect(url_for("login"))
     return render_template("settings.html")
 
 if __name__ == "__main__":

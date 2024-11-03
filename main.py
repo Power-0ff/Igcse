@@ -64,18 +64,19 @@ import random
 
 @app.route('/verify', methods=["POST", "GET"])
 def verify():
+    session.pop("code", None)
     email = session.get("email")
-
     if request.method == "POST":
         entered_code = request.form['verification_code']
         stored_code = session.get("code")
 
         if stored_code and int(entered_code) == int(stored_code):
+            session.pop("code", None)
             return redirect(url_for("home"))
         else:
             error_message = "Invalid verification code. Please try again."
             return render_template("emailverification.html", error=error_message)
-
+        
     if "code" not in session:
         verifycode = random.randint(10000, 999999)
         session["code"] = verifycode

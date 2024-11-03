@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/verifyemail.css">
-    <title>Verify Your Code</title>
+    <title>Email Verification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Verification Code</h1>
-        <p>Please enter the verification code sent to your email.</p>
-        <form action="/verify" method="POST">
-            <input type="text" name="verification_code" placeholder="Enter your code" required>
-            <button type="submit">Verify</button>
+        <h1>Email Verification</h1>
+
+        <!-- Error message display -->
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="/verify">
+            <div class="form-group">
+                <label for="verification_code">Enter Verification Code:</label>
+                <input type="text" class="form-control" id="verification_code" name="verification_code" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Verify</button>
         </form>
     </div>
 </body>

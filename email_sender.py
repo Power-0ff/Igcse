@@ -4,10 +4,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def send_email(recipient_email, verifycode):
-    sender_email = "your_email@example.com"
-    sender_password = "your_password"  # Securely handle passwords!
+    sender_email = "cpal.teams@gmail.com"
+    sender_password = "uyoy czef hdnx dxqt"
 
-    # Render the email template
     email_content = render_template('verification_email.html', verifycode=verifycode, year=2024)
 
     msg = MIMEMultipart()
@@ -18,7 +17,7 @@ def send_email(recipient_email, verifycode):
     msg.attach(MIMEText(email_content, 'html'))
 
     try:
-        with smtplib.SMTP('smtp.example.com', 587) as server:  # Update with your SMTP server
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             server.login(sender_email, sender_password)
             server.send_message(msg)

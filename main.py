@@ -68,7 +68,7 @@ def verify():
 
     if request.method == "POST":
         entered_code = request.form['verification_code']
-        stored_code = session.get("verification_code")
+        stored_code = session.get("code")
 
         if stored_code and int(entered_code) == int(stored_code):
             return redirect(url_for("home"))
@@ -76,11 +76,12 @@ def verify():
             error_message = "Invalid verification code. Please try again."
             return render_template("emailverification.html", error=error_message)
 
-    if "verification_code" not in session:
+    if "code" not in session:
         verifycode = random.randint(10000, 999999)
-        session["verification_code"] = verifycode
+        session["code"] = verifycode
 
-        send_email(email, verifycode)  # Pass only the code
+        send_email(email, verifycode)
+        print("email sent")
 
     return render_template("emailverification.html")
 

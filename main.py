@@ -94,17 +94,26 @@ def reviews():
     return render_template("reviews.html")
 
 @app.route('/onboarding')
-def onboardroute():
+def onboarding():
     if "ip" not in session:
         return redirect(url_for("login"))
-    return render_template("onboarding.html")
+    if request.method == 'POST':
+        name = request.form.get('name')
+        age = request.form.get('age')
+        class_selected = request.form.get('class')
+        year = request.form.get('year')
+        subjects = request.form.getlist('subjects')
+        preferred_study_method = request.form.get('study_method')
+        study_hours = request.form.get('study_hours')
+
+    return render_template('onboarding.html')
 
 @app.route('/agreements', methods = ["POST", "GET"])
 def termsagreements():
     if "ip" not in session:
         return redirect(url_for("login"))
     if request.method == "POST":
-        return redirect(url_for('home'))
+        return redirect(url_for('onboarding'))
     return render_template("terms.html")
 
 @app.route('/settings')

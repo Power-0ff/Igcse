@@ -93,7 +93,7 @@ def reviews():
         return redirect(url_for("login"))
     return render_template("reviews.html")
 
-@app.route('/onboarding')
+@app.route('/onboarding', methods = ["POST", "GET"])
 def onboarding():
     if "ip" not in session:
         return redirect(url_for("login"))

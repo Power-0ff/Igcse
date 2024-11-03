@@ -6,16 +6,15 @@
     <title>IGCSE Exam Preparation Portal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
     <style>
-        /* CSS for the scroll-triggered fade-in and slide-up animation */
         .fade-in-up {
             opacity: 0;
-            transform: translateY(50px); /* Start slightly below */
-            transition: opacity 0.8s ease, transform 0.9s ease;
+            transform: translateY(100px);
+            transition: opacity 1s ease, transform 1.2s ease;
         }
 
         .fade-in-up.visible {
             opacity: 1;
-            transform: translateY(0); /* Slide up to final position */
+            transform: translateY(0)
         }
     </style>
 </head>

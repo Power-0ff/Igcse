@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = '@FABRIC'
 
 @app.route('/sign_up', methods=["POST", "GET"])
-def sign_up():
+def sign_up():a
     if request.method == "POST" and 'email' in request.form and 'name' in request.form and 'password' in request.form and 'confirmpassword' in request.form:
         name = request.form['name']
         password = request.form['password']

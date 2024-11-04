@@ -4,9 +4,31 @@ import sqlite3
 import hashlib
 import random
 from email_sender import send_email
+from db import db_init, db
+from models import Img
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db_init(app)
+
 app.secret_key = '@FABRIC'
+
+@app.route('/admin', methods=["POST", "GET"])
+def admin():
+    pic = request.files['pic']
+    tags = request.form['tags']
+    if not pic:
+        return render_template('admin.html', error = 'NO PIC UPLOADED')
+    
+    filename = secure_filename(pic.filename)
+    mimetype = pic.mimetype
+
+    img = Img(img=pic.read(), mimetype = mimetype, name = filename, tags = tags)
+    db.session.add(img)
+    db.session.commit()
+    return render_template('admin.html')
 
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():

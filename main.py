@@ -10,8 +10,6 @@ app.secret_key = '@FABRIC'
 
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():
-    con = sqlite3.connect('users.db')
-    cur = con.cursor()
     if request.method == "POST" and 'email' in request.form and 'name' in request.form and 'password' in request.form and 'confirmpassword' in request.form:
         name = request.form['name']
         password = request.form['password']
@@ -19,16 +17,11 @@ def sign_up():
         email = request.form['email']
         ip = request.remote_addr
         session["ip"] = ip
+        session["name"] = name
+        session["email"] = email
+        session["password"] = password
         token = auth.authorize_sign_up(password, confirmpassword, email)
         if token:
-            password = hashlib.sha256(password.encode()).hexdigest()
-            cur.execute('''
-            INSERT INTO Authenticated_users (name, email, password, ip)
-            VALUES (?, ?, ?, ?)''', (name, email, password, ip))
-            con.commit()
-            con.close()
-            session['name'] = name
-            session['email'] = email
             return redirect(url_for('verify'))
     return render_template('sign_up.html')
 
@@ -105,6 +98,18 @@ def onboarding():
         subjects = request.form.getlist('subjects')
         preferred_study_method = request.form.get('study_method')
         study_hours = request.form.get('study_hours')
+        con = sqlite3.connect('users.db')
+        cur = con.cursor()
+        email = session["email"]
+        ip = session["ip"]
+        password = session["password"]
+        name = session["name"]
+        password = hashlib.sha256(password.encode()).hexdigest()
+        cur.execute('''
+        INSERT INTO Authenticated_users (name, email, password, ip)
+        VALUES (?, ?, ?, ?)''', (name, email, password, ip))
+        con.commit()
+        con.close()
         return redirect(url_for('home'))
     return render_template('onboarding.html')
 

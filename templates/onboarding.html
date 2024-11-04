@@ -9,8 +9,7 @@
 <body>
     <div class="container">
         <h1>Welcome to IGCSE Prep!</h1>
-        <form id="onboarding-form" method="POST">
-            <!-- Step 1: Basic Info -->
+        <form id="onboarding-form" method="post" action="/onboarding">
             <div class="form-step active" data-step="1">
                 <h2>Step 1: Basic Information</h2>
                 <label for="name">Name:</label>
@@ -145,7 +144,7 @@
 
                 <div class="navigation">
                     <button type="button" class="prev">Previous</button>
-                    <button type="submit">Submit</button>
+                    <input type = "submit" value = "Submit" placeholder="submit"/>
                 </div>
             </div>
         </form>

@@ -88,9 +88,10 @@ def reviews():
 
 @app.route('/onboarding', methods = ["POST", "GET"])
 def onboarding():
-    if "ip" not in session:
+    if "password" not in session:
         return redirect(url_for("login"))
-    if request.method == 'POST':
+    if request.method == "POST":
+        print('done')
         name = request.form.get('name')
         age = request.form.get('age')
         class_selected = request.form.get('class')

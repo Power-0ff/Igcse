@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, url_for, redirect, request, f
 import auth
 import sqlite3
 import hashlib
+import base64
 import random
 from email_sender import send_email
 from db import db_init, db
@@ -18,6 +19,10 @@ app.secret_key = '@FABRIC'
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import SQLAlchemyError
+
+@app.template_filter('b64encode')
+def b64encode(data):
+    return base64.b64encode(data).decode('utf-8')
 
 @app.route('/admin', methods=["POST", "GET"])
 def admin():
@@ -98,7 +103,8 @@ def welcome():
 def home():
     if "ip" not in session:
         return redirect(url_for("login"))
-    return render_template('home.html')
+    images = Img.query.all()
+    return render_template('home.html', images=images)
 
 @app.route('/logout')
 def logout():

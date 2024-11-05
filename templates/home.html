@@ -24,22 +24,24 @@
 
     <main>
         <section class="feed">
+            {% for image in images %}
             <div class="post">
                 <div class="post-header">
-                    <img src="user1.jpg" alt="User1" class="profile-pic">
-                    <span class="username">user1</span>
+                    <h3>{{ image.name }}</h3>
                 </div>
-                <img src="post1.jpg" alt="Post Image" class="post-image">
+                <div class="pics">
+                    <img src="data:{{ image.mimetype }};base64,{{ image.img | b64encode }}" alt="{{ image.name }}">
+                    <p>Category: {{ image.category }}</p>
+                    <p>Subject: {{ image.subject }}</p>
+                    <p>Tags: {{ image.tags }}</p>
+                </div>
                 <div class="post-actions">
                     <img src="like-icon.png" alt="Like">
                     <img src="comment-icon.png" alt="Comment">
                     <img src="share-icon.png" alt="Share">
                 </div>
-                <div class="post-caption">
-                </div>
-                <div class="post-comments">
-                </div>
             </div>
+            {% endfor %}
         </section>
 
         <aside class="sidebar">

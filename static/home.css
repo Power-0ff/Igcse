@@ -1,6 +1,27 @@
-/* home.css */
+.pics {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+}
 
-/* General styling */
+.pics li {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+}
+
+.pics img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.pics p {
+    margin: 5px 0;
+    color: #333;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #FFE5D9;

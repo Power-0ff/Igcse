@@ -1,5 +1,6 @@
 from flask import url_for, redirect, request, flash
 import sqlite3
+import hashlib
 
 def authorize_sign_up(password, confirmpassword, email):
     con = sqlite3.connect('users.db')
@@ -27,4 +28,11 @@ def authenticate_login(password, email):
         return True
     else:
         flash('Invalid credentials', 'error')
+        return False
+
+def authorize_admin(password, email):
+    paskey = hashlib.sha256('@FABRIC'.encode()).hexdigest()
+    if password == paskey and email == 'cpal.teams@gmail.com':
+        return True
+    else:
         return False

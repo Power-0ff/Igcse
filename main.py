@@ -26,6 +26,8 @@ def b64encode(data):
 
 @app.route('/admin', methods=["POST", "GET"])
 def admin():
+    if 'admin' not in session:
+        return redirect(url_for('welcome'))
     if request.method == "POST":
         if 'pic' not in request.files:
             return render_template('admin.html', error='No file part in the request')
@@ -89,6 +91,11 @@ def login():
         password = request.form['password']
         password = hashlib.sha256(password.encode()).hexdigest()
         email = request.form['email']
+        token = auth.authorize_admin(password, email)
+        if token:
+            print('authorized')
+            session["admin"] = '@ADMIN'
+            return redirect(url_for('admin'))
         Token = auth.authenticate_login(password, email)
         if Token:
             session['email'] = email

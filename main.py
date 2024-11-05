@@ -15,19 +15,47 @@ db_init(app)
 
 app.secret_key = '@FABRIC'
 
+from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.utils import secure_filename
+from sqlalchemy.exc import SQLAlchemyError
+
 @app.route('/admin', methods=["POST", "GET"])
 def admin():
-    pic = request.files['pic']
-    tags = request.form['tags']
-    if not pic:
-        return render_template('admin.html', error = 'NO PIC UPLOADED')
-    
-    filename = secure_filename(pic.filename)
-    mimetype = pic.mimetype
+    if request.method == "POST":
+        if 'pic' not in request.files:
+            return render_template('admin.html', error='No file part in the request')
+        
+        pic = request.files['pic']
+        if pic.filename == '':
+            return render_template('admin.html', error='No picture uploaded')
+        
+        tags = request.form.get('tags', '').strip()
+        category = request.form.get('category', '').strip()
+        subject = request.form.get('subject', '').strip()
+        
+        if not tags or not category or not subject:
+            return render_template('admin.html', error='Tags, category, and subject are required')
 
-    img = Img(img=pic.read(), mimetype = mimetype, name = filename, tags = tags)
-    db.session.add(img)
-    db.session.commit()
+        filename = secure_filename(pic.filename)
+        
+        if not pic.mimetype.startswith('image'):
+            return render_template('admin.html', error='Invalid file type. Please upload an image file')
+        
+        existing_image = Img.query.filter_by(name=filename, category=category, subject=subject, tags=tags).first()
+        if existing_image:
+            return render_template('admin.html', error='An image with the same name and details already exists')
+        
+        try:
+            img = Img(img=pic.read(), mimetype=pic.mimetype, category=category, subject=subject, name=filename, tags=tags)
+            db.session.add(img)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return render_template('admin.html', error=f'Database error: {str(e)}')
+        
+        images = Img.query.all()
+        return render_template('admin.html', images=images)
+    
     return render_template('admin.html')
 
 @app.route('/sign_up', methods=["POST", "GET"])

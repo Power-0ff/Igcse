@@ -51,12 +51,12 @@ def admin():
             db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
-            return render_template('admin.html', error=f'Database error: {str(e)}')
+            return render_template('admin.html', error='img exists')
         
         images = Img.query.all()
         return render_template('admin.html', images=images)
-    
-    return render_template('admin.html')
+    images = Img.query.all()
+    return render_template('admin.html', images=images)
 
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():

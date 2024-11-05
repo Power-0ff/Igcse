@@ -29,7 +29,15 @@
         <input type="submit" value="upload"/>
     </form>
     <div class="pics">
-        {{ images }}
+        {% for image in images %}
+            <li>
+                <img src="data:{{ image.mimetype }};base64,{{ image.img | b64encode }}" alt="{{ image.name }}">
+                <p>Name: {{ image.name }}</p>
+                <p>Category: {{ image.category }}</p>
+                <p>Subject: {{ image.subject }}</p>
+                <p>Tags: {{ image.tags }}</p>
+            </li>
+        {% endfor %}
     </div>
 </div>
 

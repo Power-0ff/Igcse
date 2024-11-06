@@ -1,24 +1,29 @@
+import os
 from flask import Flask, render_template, session, url_for, redirect, request, flash
 import auth
 import sqlite3
-import hashlib
 import base64
 import random
 from email_sender import send_email
 from db import db_init, db
 from models import Img
 from werkzeug.utils import secure_filename
+from flask_bcrypt import Bcrypt
+from flask_session import Session
+from flask_wtf.csrf import CSRFProtect
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SESSION_TYPE'] = 'filesystem'
+
+app.secret_key = os.getenv('FLASK_SECRET_KEY', '@FABRIC')
+bcrypt = Bcrypt(app)
+csrf = CSRFProtect(app)
+Session(app)
+
 db_init(app)
-
-app.secret_key = '@FABRIC'
-
-from flask import Flask, render_template, request, redirect, url_for
-from werkzeug.utils import secure_filename
-from sqlalchemy.exc import SQLAlchemyError
 
 @app.template_filter('b64encode')
 def b64encode(data):
@@ -44,21 +49,22 @@ def admin():
             return render_template('admin.html', error='Tags, category, and subject are required')
 
         filename = secure_filename(pic.filename)
-        
-        if not pic.mimetype.startswith('image'):
+
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+        if not ('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
             return render_template('admin.html', error='Invalid file type. Please upload an image file')
-        
+
         existing_image = Img.query.filter_by(name=filename, category=category, subject=subject, tags=tags).first()
         if existing_image:
             return render_template('admin.html', error='An image with the same name and details already exists')
-        
+
         try:
             img = Img(img=pic.read(), mimetype=pic.mimetype, category=category, subject=subject, name=filename, tags=tags)
             db.session.add(img)
             db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
-            return render_template('admin.html', error='img exists')
+            return render_template('admin.html', error='Error saving image to database')
         
         images = Img.query.all()
         return render_template('admin.html', images=images)
@@ -83,21 +89,23 @@ def sign_up():
             return redirect(url_for('verify'))
     return render_template('sign_up.html')
 
-@app.route('/login', methods = ["POST", "GET"])
+@app.route('/login', methods=["POST", "GET"])
 def login():
     ip = request.remote_addr
     session["ip"] = ip
     if request.method == "POST" and 'email' in request.form and 'password' in request.form:
         password = request.form['password']
-        password = hashlib.sha256(password.encode()).hexdigest()
         email = request.form['email']
-        token = auth.authorize_admin(password, email)
+        
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+        token = auth.authorize_admin(password_hash, email)
+        
         if token:
-            print('authorized')
             session["admin"] = '@ADMIN'
             return redirect(url_for('admin'))
-        Token = auth.authenticate_login(password, email)
-        if Token:
+        
+        token = auth.authenticate_login(password_hash, email)
+        if token:
             session['email'] = email
             return redirect(url_for('home'))
     return render_template('login.html')
@@ -178,6 +186,14 @@ def settings():
     if "ip" not in session:
         return redirect(url_for("login"))
     return render_template("settings.html")
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html', error=error), 500
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html', error=error), 404
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

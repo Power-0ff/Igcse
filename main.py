@@ -1,33 +1,20 @@
 import os
-from flask import Flask, render_template, session, url_for, redirect, request, flash
-import auth
+from flask import Flask, render_template, session, url_for, redirect, request
 import sqlite3
-import base64
+import hashlib
 import random
 from email_sender import send_email
 from db import db_init, db
 from models import Img
 from werkzeug.utils import secure_filename
-from flask_bcrypt import Bcrypt
-from flask_session import Session
-from flask_wtf.csrf import CSRFProtect
-from markupsafe import escape
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SESSION_TYPE'] = 'filesystem'
-
 app.secret_key = os.getenv('FLASK_SECRET_KEY', '@FABRIC')
-bcrypt = Bcrypt(app)
-csrf = CSRFProtect(app)
-Session(app)
 
 db_init(app)
 
-@app.template_filter('b64encode')
-def b64encode(data):
-    return base64.b64encode(data).decode('utf-8')
 
 @app.route('/admin', methods=["POST", "GET"])
 def admin():
@@ -49,7 +36,6 @@ def admin():
             return render_template('admin.html', error='Tags, category, and subject are required')
 
         filename = secure_filename(pic.filename)
-
         ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
         if not ('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
             return render_template('admin.html', error='Invalid file type. Please upload an image file')
@@ -62,19 +48,18 @@ def admin():
             img = Img(img=pic.read(), mimetype=pic.mimetype, category=category, subject=subject, name=filename, tags=tags)
             db.session.add(img)
             db.session.commit()
-        except SQLAlchemyError as e:
+        except Exception as e:
             db.session.rollback()
             return render_template('admin.html', error='Error saving image to database')
-        
+
         images = Img.query.all()
         return render_template('admin.html', images=images)
     images = Img.query.all()
     return render_template('admin.html', images=images)
 
+
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():
-    con = sqlite3.connect('users.db')
-    cur = con.cursor()
     if request.method == "POST" and 'email' in request.form and 'name' in request.form and 'password' in request.form and 'confirmpassword' in request.form:
         name = request.form['name']
         password = request.form['password']
@@ -82,41 +67,45 @@ def sign_up():
         email = request.form['email']
         ip = request.remote_addr
         session["ip"] = ip
-        token = auth.authorize_sign_up(password, confirmpassword, email)
-        if token:
-            password = hashlib.sha256(password.encode()).hexdigest()
-            cur.execute('''
-            INSERT INTO Authenticated_users (name, email, password, ip)
-            VALUES (?, ?, ?, ?)''', (name, email, password, ip))
+        
+        if password != confirmpassword:
+            return render_template('sign_up.html', error="Passwords do not match")
+
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+        with sqlite3.connect('users.db') as con:
+            cur = con.cursor()
+            cur.execute('''INSERT INTO Authenticated_users (name, email, password, ip) 
+                           VALUES (?, ?, ?, ?)''', (name, email, hashed_password, ip))
             con.commit()
-            con.close()
-            return redirect(url_for('termsagreements'))
+        return redirect(url_for('termsagreements'))
     return render_template('sign_up.html')
+
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
-    ip = request.remote_addr
-    session["ip"] = ip
     if request.method == "POST" and 'email' in request.form and 'password' in request.form:
         password = request.form['password']
         email = request.form['email']
-        
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-        token = auth.authorize_admin(password_hash, email)
-        
-        if token:
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+        if email == "admin@example.com" and hashed_password == "hashed_admin_password":
             session["admin"] = '@ADMIN'
             return redirect(url_for('admin'))
-        
-        token = auth.authenticate_login(password_hash, email)
-        if token:
-            session['email'] = email
-            return redirect(url_for('home'))
+
+        with sqlite3.connect('users.db') as con:
+            cur = con.cursor()
+            user = cur.execute('SELECT * FROM Authenticated_users WHERE email = ? AND password = ?', (email, hashed_password)).fetchone()
+            if user:
+                session['email'] = email
+                return redirect(url_for('home'))
     return render_template('login.html')
+
 
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
+
 
 @app.route('/home')
 def home():
@@ -125,13 +114,12 @@ def home():
     images = Img.query.all()
     return render_template('home.html', images=images)
 
+
 @app.route('/logout')
 def logout():
-    return redirect(url_for("sign_up"))
-
-@app.route('/')
-def redir():
+    session.clear()
     return redirect(url_for("welcome"))
+
 
 @app.route('/verify', methods=["POST", "GET"])
 def verify():
@@ -144,40 +132,16 @@ def verify():
             session.pop("code", None)
             return redirect(url_for("termsagreements"))
         else:
-            error_message = "Invalid verification code. Please try again."
-            return render_template("emailverification.html", error=error_message)
+            return render_template("emailverification.html", error="Invalid verification code. Please try again")
         
     if "code" not in session:
-        verifycode = random.randint(10000, 999999)
+        verifycode = random.randint(100000, 999999)
         session["code"] = verifycode
-
         send_email(email, verifycode)
-        print("email sent")
-
     return render_template("emailverification.html")
 
-@app.route('/reviews')
-def reviews():
-    if "ip" not in session:
-        return redirect(url_for("login"))
-    return render_template("reviews.html")
 
-@app.route('/onboarding', methods = ["POST", "GET"])
-def onboarding():
-    if "ip" not in session:
-        return redirect(url_for("login"))
-    if request.method == 'POST':
-        name = request.form.get('name')
-        age = request.form.get('age')
-        class_selected = request.form.get('class')
-        year = request.form.get('year')
-        subjects = request.form.getlist('subjects')
-        preferred_study_method = request.form.get('study_method')
-        study_hours = request.form.get('study_hours')
-        return redirect(url_for('home'))
-    return render_template('onboarding.html')
-
-@app.route('/agreements', methods = ["POST", "GET"])
+@app.route('/agreements', methods=["POST", "GET"])
 def termsagreements():
     if "ip" not in session:
         return redirect(url_for("login"))
@@ -185,19 +149,6 @@ def termsagreements():
         return redirect(url_for('onboarding'))
     return render_template("terms.html")
 
-@app.route('/settings')
-def settings():
-    if "ip" not in session:
-        return redirect(url_for("login"))
-    return render_template("settings.html")
-
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('500.html', error=error), 500
-
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('404.html', error=error), 404
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

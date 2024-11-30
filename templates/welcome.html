@@ -5,10 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IGCSE Exam Preparation Portal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='welcome.css') }}">
+    <style>
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: opacity 1s ease, transform 1.2s ease;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    </style>
 </head>
 <body>
+
     <!-- Hero Section -->
-    <header class="hero">
+    <header class="hero fade-in-up">
         <h1>Welcome to Your IGCSE Success Hub</h1>
         <p>Your comprehensive platform for IGCSE past papers, customized quizzes, GPA tracking, and insightful resources designed to support your academic journey.</p>
         <div class="cta-buttons">
@@ -17,36 +30,38 @@
         </div>
     </header>
 
-    <section class="highlights-wrapper">
+    <!-- Highlights Section -->
+    <section class="highlights-wrapper fade-in-up">
         <div class="features">
             <h2>Platform Highlights</h2>
             <p>Explore interactive resources that empower your academic journey and beyond!</p>
             <div class="feature-container">
-                <div class="feature-box">
+                <div class="feature-box fade-in-up">
                     <i class="icon book-icon"></i>
                     <h3>Comprehensive Past Papers</h3>
                     <p>Gain access to a curated collection of IGCSE past papers to test and refine your knowledge.</p>
                 </div>
-                <div class="feature-box">
+                <div class="feature-box fade-in-up">
                     <i class="icon mcq-icon"></i>
                     <h3>MCQs & Practice Quizzes</h3>
                     <p>Challenge yourself with multiple-choice questions and quizzes tailored to your level.</p>
                 </div>
-                <div class="feature-box">
+                <div class="feature-box fade-in-up">
                     <i class="icon gpa-icon"></i>
                     <h3>GPA Calculator</h3>
                     <p>Track your academic progress and calculate your GPA across subjects effortlessly.</p>
                 </div>
-                <div class="feature-box">
+                <div class="feature-box fade-in-up">
                     <i class="icon success-icon"></i>
                     <h3>Study Tips & Resources</h3>
                     <p>Get expert insights and resources to maximize your preparation for IGCSE success.</p>
                 </div>
             </div>
         </div>
-    </section>    
+    </section>
 
-    <section class="ban-container">
+    <!-- Testimonials Section -->
+    <section class="ban-container fade-in-up">
         <div class="banner">
             <h2>What Our Users Say</h2>
             <div class="slider" style="--quantity: 5">
@@ -70,12 +85,12 @@
     </section>
 
     <!-- CEO Spotlight Section -->
-    <section class="ceo-spotlight-wrapper">
+    <section class="ceo-spotlight-wrapper fade-in-up">
         <div class="ceo-spotlight">
             <h2>CEO Spotlight</h2>
             <p>Meet our dedicated leaders, Ahyan Khan and Ali Raza, who are passionately committed to transforming education and student success.</p>
             <div class="ceo-container">
-                <div class="ceo-box ahyan-box">
+                <div class="ceo-box ahyan-box fade-in-up">
                     <div class="ceo-info">
                         <h3>Ahyan Khan</h3>
                         <p>Co-CEO</p>
@@ -83,7 +98,7 @@
                         <p>With a strong background in educational technology, Ahyan is focused on creating impactful resources that make learning both effective and accessible.</p>
                     </div>
                 </div>
-                <div class="ceo-box ali-box">
+                <div class="ceo-box ali-box fade-in-up">
                     <div class="ceo-info">
                         <h3>Ali Raza</h3>
                         <p>Co-CEO</p>
@@ -96,12 +111,12 @@
     </section>
 
     <!-- Motivational Quote Section -->
-    <section class="quote-section">
+    <section class="quote-section fade-in-up">
         <blockquote>"Success is not the key to happiness. Happiness is the key to success." - Albert Schweitzer</blockquote>
     </section>
 
     <!-- Footer Section -->
-    <footer>
+    <footer class="fade-in-up">
         <p>&copy; 2023 IGCSE Exam Preparation Portal</p>
         <nav>
             <div class="navlnk">
@@ -124,6 +139,29 @@
         </form>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- JavaScript to Trigger Scroll Animation -->
+    <script>
+        // Function to check if an element is in the viewport
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return rect.top <= (window.innerHeight || document.documentElement.clientHeight);
+        }
+
+        // Function to add 'visible' class to elements in the viewport
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.fade-in-up');
+            elements.forEach(element => {
+                if (isInViewport(element)) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Event listener for scrolling
+        window.addEventListener('scroll', animateOnScroll);
+
+        // Initial check in case some elements are already in view on load
+        document.addEventListener('DOMContentLoaded', animateOnScroll);
+    </script>
 </body>
 </html>

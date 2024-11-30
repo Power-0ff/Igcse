@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/admin.css">
+    <title>Admin Upload</title>
+</head>
+<body>
+
+<div class="container">
+    <h2>Admin File Upload</h2>
+    <div class="errors">
+        {{ error }}
+    </div>
+    <form action="/admin" method="POST" enctype="multipart/form-data">
+        <label for="tag">Tag</label>
+        <input type="text" id="tag" name="tags" placeholder="Enter a tag for the file" required>
+
+        <label for="subject">subject</label>
+        <input type="text" id="subject" name="subject" placeholder="which subject" required>
+
+        <label for="category">category</label>
+        <input type="text" id="category" name="category" placeholder="core or extended" required>
+
+        <label for="file">Upload Picture</label>
+        <input type="file" name="pic" required>
+
+        <input type="submit" value="upload"/>
+    </form>
+    <div class="pics">
+        {% for image in images %}
+            <li>
+                <img src="data:{{ image.mimetype }};base64,{{ image.img | b64encode }}" alt="{{ image.name }}">
+                <p>Name: {{ image.name }}</p>
+                <p>Category: {{ image.category }}</p>
+                <p>Subject: {{ image.subject }}</p>
+                <p>Tags: {{ image.tags }}</p>
+            </li>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

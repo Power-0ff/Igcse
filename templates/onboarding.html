@@ -3,9 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="/static/onboard.css">
+    <title>IGCSE Onboarding</title>
 </head>
 <body>
-    
+    <div class="container">
+        <h1>Welcome to IGCSE Prep!</h1>
+        <form id="onboarding-form" method="post" action="/onboarding">
+            <div class="form-step active" data-step="1">
+                <h2>Step 1: Basic Information</h2>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+                
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" required>
+                
+                <div class="navigation">
+                    <button type="button" class="next">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Class and Year -->
+            <div class="form-step" data-step="2">
+                <h2>Step 2: Class and Year</h2>
+                <label for="class">Class:</label>
+                <select id="class" name="class" required>
+                    <option value="">Select Class</option>
+                    <option value="IGCSE1">IGCSE1</option>
+                    <option value="IGCSE2">IGCSE2</option>
+                    <option value="IGCSE3">IGCSE3</option>
+                </select>
+
+                <label for="year">Year of Study:</label>
+                <select id="year" name="year" required>
+                    <option value="">Select Year</option>
+                    <option value="1">Year 1</option>
+                    <option value="2">Year 2</option>
+                    <option value="3">Year 3</option>
+                </select>
+
+                <label for="study_goal">Main Goal for this Year:</label>
+                <textarea id="study_goal" name="study_goal" rows="3" placeholder="Describe your main academic goal..."></textarea>
+
+                <div class="navigation">
+                    <button type="button" class="prev">Previous</button>
+                    <button type="button" class="next">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Subjects -->
+            <div class="form-step" data-step="3">
+                <h2>Step 3: Subjects</h2>
+                <label>Select Subjects:</label>
+                <div class="checkbox-group">
+                    <div>
+                        <input type="checkbox" id="math" name="subjects" value="Mathematics">
+                        <label for="math">Mathematics</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="eng" name="subjects" value="English">
+                        <label for="eng">English</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="sc" name="subjects" value="Science">
+                        <label for="sc">Science</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="hist" name="subjects" value="History">
+                        <label for="hist">History</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="geo" name="subjects" value="Geography">
+                        <label for="geo">Geography</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="bio" name="subjects" value="Biology">
+                        <label for="bio">Biology</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="chem" name="subjects" value="Chemistry">
+                        <label for="chem">Chemistry</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="biz" name="subjects" value="Business Studies">
+                        <label for="biz">Business Studies</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="art" name="subjects" value="Art">
+                        <label for="art">Art</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="isl" name="subjects" value="Islamiyat">
+                        <label for="isl">Islamiyat</label>
+                    </div>
+                </div>
+            
+                <div class="navigation">
+                    <button type="button" class="prev">Previous</button>
+                    <button type="button" class="next">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Study Preferences -->
+            <div class="form-step" data-step="4">
+                <h2>Step 4: Study Preferences</h2>
+                <label for="study_method">Preferred Study Method:</label>
+                <select id="study_method" placeholder="Choose your study method" name="study_method" required>
+                    <option value="visual">Visual (e.g., videos, diagrams)</option>
+                    <option value="auditory">Auditory (e.g., lectures, podcasts)</option>
+                    <option value="kinesthetic">Kinesthetic (e.g., hands-on activities)</option>
+                </select>
+
+                <label for="study_hours">Study Hours per Week:</label>
+                <input type="number" id="study_hours" name="study_hours" required>
+
+                <label for="study_location">Preferred Study Location:</label>
+                <input type="text" id="study_location" name="study_location" placeholder="E.g., home, library, etc.">
+
+                <div class="navigation">
+                    <button type="button" class="prev">Previous</button>
+                    <button type="button" class="next">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 5: Personal Goals -->
+            <div class="form-step" data-step="5">
+                <h2>Step 5: Personal Goals and Challenges</h2>
+                <label for="personal_goals">What are your academic and personal goals this year?</label>
+                <textarea id="personal_goals" name="personal_goals" rows="4" placeholder="Describe your goals..."></textarea>
+
+                <label for="challenges">What are some challenges you anticipate in your studies?</label>
+                <textarea id="challenges" name="challenges" rows="4" placeholder="Describe any challenges..."></textarea>
+
+                <label for="support_needed">What type of support would help you succeed?</label>
+                <textarea id="support_needed" name="support_needed" rows="4" placeholder="E.g., tutoring, extra resources, etc."></textarea>
+
+                <div class="navigation">
+                    <button type="button" class="prev">Previous</button>
+                    <input type = "submit" value = "Submit" placeholder="submit"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formSteps = document.querySelectorAll('.form-step');
+            const nextButtons = document.querySelectorAll('.next');
+            const prevButtons = document.querySelectorAll('.prev');
+
+            let currentStep = 0;
+
+            function showStep(step) {
+                formSteps.forEach((formStep, index) => {
+                    formStep.classList.toggle('active', index === step);
+                });
+            }
+
+            nextButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    currentStep++;
+                    showStep(currentStep);
+                });
+            });
+
+            prevButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    currentStep--;
+                    showStep(currentStep);
+                });
+            });
+
+            // Show the first step initially
+            showStep(currentStep);
+        });
+    </script>
 </body>
 </html>

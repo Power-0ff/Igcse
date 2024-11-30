@@ -1,6 +1,34 @@
-/* home.css */
+.pics {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+    text-align: center; /* Center content inside .pics */
+}
 
-/* General styling */
+.pics li {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    display: inline-block; /* Ensure the images are inline-block */
+    width: 100%; /* Full width to ensure images stretch the container */
+}
+
+.pics img {
+    max-width: 500px; /* Limit the image width to 500px (adjust as needed) */
+    width: 100%; /* Allow the image to scale within the container */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 4px;
+    display: block; /* Ensures the image is centered inside its container */
+    margin: 0 auto; /* Center the image horizontally */
+}
+
+.pics p {
+    margin: 5px 0;
+    color: #333;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #FFE5D9;
@@ -49,10 +77,15 @@ header {
 main {
     display: flex;
     margin: 20px;
+    justify-content: flex-start; /* Prevent it from stretching, keeps sidebar separate */
 }
 
 .feed {
     flex: 2;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px; /* Maximum width of the feed */
+    margin-left: 0; /* Ensures feed doesn't push against the sidebar */
 }
 
 .post {
@@ -80,12 +113,6 @@ main {
 .username {
     font-weight: bold;
     color: #5D4037;
-}
-
-.post-image {
-    width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
 }
 
 .post-actions img {

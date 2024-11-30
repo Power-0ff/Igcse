@@ -24,7 +24,8 @@ def sign_up():
             VALUES (?, ?, ?, ?)''', (name, email, password, ip))
             con.commit()
             con.close()
-            return redirect(url_for('termsagreements'))
+            session['name'] = name
+            return redirect(url_for('home'))
     return render_template('sign_up.html')
 
 @app.route('/login', methods = ["POST", "GET"])
@@ -53,28 +54,6 @@ def logout():
 @app.route('/')
 def redir():
     return redirect(url_for("welcome"))
-
-@app.route('/reviews')
-def reviews():
-    return render_template("reviews.html")
-
-@app.route('/verifyuser')
-def verifyemail():
-    return render_template("emailverification.html")
-
-@app.route('/onboarding')
-def onboardroute():
-    return render_template("onboarding.html")
-
-@app.route('/agreements', methods = ["POST", "GET"])
-def termsagreements():
-    if request.method == "POST":
-        return redirect(url_for('home'))
-    return render_template("terms.html")
-
-@app.route('/settings')
-def settings():
-    return render_template("settings.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

@@ -1,39 +1,70 @@
 import os
-from flask import Flask, render_template, session, url_for, redirect, request
-import sqlite3
+import base64
 import hashlib
 import random
-from email_sender import send_email
-from db import db_init, db
-from models import Img
+import sqlite3
+from flask import Flask, render_template, session, url_for, redirect, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
+from email_sender import send_email
 
+# Flask app setup
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///img.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('FLASK_SECRET_KEY', '@FABRIC')
 
-db_init(app)
+# Initialize database and login manager
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
 
-# Allowed extensions for file uploads
+# Allowed file types
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+# User model
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(256), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)  # Admin flag
+
+# Image model
+class Img(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300), nullable=False)
+    img = db.Column(db.LargeBinary, nullable=False)
+    mimetype = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    subject = db.Column(db.String(50), nullable=False)
+    tags = db.Column(db.String(300), nullable=False)
+
+# Create tables if they don't exist
+with app.app_context():
+    db.create_all()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Template filter for Base64 encoding
+@app.template_filter('b64encode')
+def b64encode_filter(data):
+    if data is None:
+        return ""
+    return base64.b64encode(data).decode('utf-8')
+
 def is_allowed_file(filename):
-    """Check if the uploaded file has an allowed extension."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 @app.route('/admin', methods=["POST", "GET"])
+@login_required
 def admin():
-    email = session.get('email')
-    if not email:
-        return redirect(url_for('login'))
-
-    with sqlite3.connect('users.db') as con:
-        cur = con.cursor()
-        user = cur.execute('SELECT * FROM Authenticated_users WHERE email = ?', (email,)).fetchone()
-        if not user or not user[-1]:  # Assuming `is_admin` is the last column
-            return redirect(url_for('welcome'))
+    if not current_user.is_admin:
+        return redirect(url_for('welcome'))
 
     if request.method == "POST":
         if 'pic' not in request.files:
@@ -72,126 +103,90 @@ def admin():
     images = Img.query.all()
     return render_template('admin.html', images=images)
 
-
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():
     if request.method == "POST":
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip()
-        password = request.form.get('password', '').strip()
-        confirmpassword = request.form.get('confirmpassword', '').strip()
-        ip = request.remote_addr
-
-        if not name or not email or not password or not confirmpassword:
-            return render_template('sign_up.html', error="All fields are required")
-        
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        confirmpassword = request.form['confirmpassword']
         if password != confirmpassword:
             return render_template('sign_up.html', error="Passwords do not match")
 
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return render_template('sign_up.html', error="Email already registered")
 
-        try:
-            with sqlite3.connect('users.db') as con:
-                cur = con.cursor()
-                cur.execute('INSERT INTO Authenticated_users (name, email, password, ip, is_admin) VALUES (?, ?, ?, ?, ?)',
-                            (name, email, hashed_password, ip, 0))  # Default is_admin = 0
-                con.commit()
-        except sqlite3.Error as e:
-            return render_template('sign_up.html', error=f"Database error: {e}")
+        new_user = User(name=name, email=email, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
 
-        return redirect(url_for('termsagreements'))
+        return redirect(url_for('login'))
     return render_template('sign_up.html')
-
 
 @app.route('/login', methods=["POST", "GET"])
 def login():
     if request.method == "POST":
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '').strip()
-
-        if not email or not password:
-            return render_template('login.html', error="Both email and password are required")
-
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-        try:
-            with sqlite3.connect('users.db') as con:
-                cur = con.cursor()
-                user = cur.execute('SELECT * FROM Authenticated_users WHERE email = ? AND password = ?', 
-                                   (email, hashed_password)).fetchone()
-                if user:
-                    session['email'] = email
-                    session['is_admin'] = user[-1]  # Assuming `is_admin` is the last column
-                    if user[-1]:  # Redirect admin users to the admin page
-                        return redirect(url_for('admin'))
-                    return redirect(url_for('home'))
-        except sqlite3.Error as e:
-            return render_template('login.html', error=f"Database error: {e}")
-
+        user = User.query.filter_by(email=email, password=hashed_password).first()
+        if user:
+            login_user(user)
+            if user.is_admin:
+                return redirect(url_for('admin'))
+            return redirect(url_for('home'))
+        return render_template('login.html', error="Invalid credentials")
     return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for("welcome"))
 
 @app.route('/')
 def welcome():
     return render_template('welcome.html')
 
-
 @app.route('/home')
+@login_required
 def home():
-    if "email" not in session:
-        return redirect(url_for("login"))
     images = Img.query.all()
     return render_template('home.html', images=images)
 
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for("welcome"))
-
-
 @app.route('/verify', methods=["POST", "GET"])
+@login_required
 def verify():
-    email = session.get("email")
-    if not email:
-        return redirect(url_for('login'))
-
+    email = current_user.email
     if request.method == "POST":
-        entered_code = request.form.get('verification_code', '').strip()
+        entered_code = request.form['verification_code']
         stored_code = session.get("code")
 
-        if stored_code and entered_code.isdigit() and int(entered_code) == int(stored_code):
+        if stored_code and int(entered_code) == int(stored_code):
             session.pop("code", None)
             return redirect(url_for("termsagreements"))
         else:
             return render_template("emailverification.html", error="Invalid verification code. Please try again")
-
+        
     if "code" not in session:
         verifycode = random.randint(100000, 999999)
         session["code"] = verifycode
         send_email(email, verifycode)
-
     return render_template("emailverification.html")
 
-
 @app.route('/agreements', methods=["POST", "GET"])
+@login_required
 def termsagreements():
-    if "email" not in session:
-        return redirect(url_for("login"))
-
     if request.method == "POST":
         return redirect(url_for('onboarding'))
-
     return render_template("terms.html")
 
-
 @app.route('/onboarding', methods=["POST", "GET"])
+@login_required
 def onboarding():
-    if "email" not in session:
-        return redirect(url_for("login"))
-
     return render_template("onboarding.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

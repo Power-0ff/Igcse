@@ -6,17 +6,14 @@ import hashlib
 import random
 from email_sender import send_email
 
-# Initialize Flask app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('FLASK_SECRET_KEY', '@FABRIC')
 
-# Initialize database
 db = SQLAlchemy(app)
 
 
-# Database models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
@@ -25,6 +22,7 @@ class User(db.Model):
     is_verified = db.Column(db.Boolean, default=False)
     has_agreed_terms = db.Column(db.Boolean, default=False)
     has_completed_onboarding = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
 
 class Img(db.Model):
@@ -37,7 +35,6 @@ class Img(db.Model):
     tags = db.Column(db.String(300), nullable=True)
 
 
-# Routes
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():
     if request.method == "POST":
@@ -45,31 +42,19 @@ def sign_up():
         email = request.form['email']
         password = request.form['password']
         confirmpassword = request.form['confirmpassword']
-
         if password != confirmpassword:
             return render_template('sign_up.html', error="Passwords do not match")
-
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
-
-        # Check if email already exists
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             return render_template('sign_up.html', error="Email already registered")
-
-        # Create and save the new user
         new_user = User(name=name, email=email, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
-
-        # Generate a verification code
         verifycode = random.randint(100000, 999999)
         session['email'] = email
         session['code'] = verifycode
-
-        # Send the verification code via email
         send_email(email, verifycode)
-
-        # Redirect to verification page
         return redirect(url_for('verify'))
     return render_template('sign_up.html')
 
@@ -79,15 +64,12 @@ def verify():
     email = session.get("email")
     if not email:
         return redirect(url_for("sign_up"))
-
     user = User.query.filter_by(email=email).first()
     if not user or user.is_verified:
         return redirect(url_for("home"))
-
     if request.method == "POST":
         entered_code = request.form['verification_code']
         stored_code = session.get("code")
-
         if stored_code and int(entered_code) == int(stored_code):
             user.is_verified = True
             db.session.commit()
@@ -95,7 +77,6 @@ def verify():
             return redirect(url_for("termsagreements"))
         else:
             return render_template("emailverification.html", error="Invalid verification code. Please try again")
-
     if "code" not in session:
         verifycode = random.randint(100000, 999999)
         session["code"] = verifycode
@@ -108,13 +89,11 @@ def termsagreements():
     email = session.get("email")
     if not email:
         return redirect(url_for("sign_up"))
-
     user = User.query.filter_by(email=email).first()
     if not user or not user.is_verified:
         return redirect(url_for("verify"))
     if user.has_agreed_terms:
         return redirect(url_for("home"))
-
     if request.method == "POST":
         user.has_agreed_terms = True
         db.session.commit()
@@ -127,13 +106,11 @@ def onboarding():
     email = session.get("email")
     if not email:
         return redirect(url_for("sign_up"))
-
     user = User.query.filter_by(email=email).first()
     if not user or not user.has_agreed_terms:
         return redirect(url_for("agreements"))
     if user.has_completed_onboarding:
         return redirect(url_for("home"))
-
     if request.method == "POST":
         user.has_completed_onboarding = True
         db.session.commit()
@@ -150,7 +127,6 @@ def welcome():
 def home():
     if 'email' not in session:
         return redirect(url_for("login"))
-
     images = Img.query.all()
     return render_template('home.html', images=images)
 
@@ -161,12 +137,13 @@ def login():
         password = request.form['password']
         email = request.form['email']
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
-
         user = User.query.filter_by(email=email, password=hashed_password).first()
         if user:
             session['email'] = email
+            session['is_admin'] = user.is_admin
+            if user.is_admin:
+                return redirect(url_for('admin'))
             return redirect(url_for('home'))
-
     return render_template('login.html')
 
 
@@ -178,13 +155,43 @@ def logout():
 
 @app.route('/admin', methods=["POST", "GET"])
 def admin():
-    if 'admin' not in session:
+    email = session.get('email')
+    if not email:
         return redirect(url_for('login'))
-    # Admin functionality
-    # Add admin route logic here if required
-    return render_template('admin.html')
+    user = User.query.filter_by(email=email).first()
+    if not user or not user.is_admin:
+        return redirect(url_for('home'))
+    if request.method == "POST":
+        if 'pic' not in request.files:
+            return render_template('admin.html', error='No file part in the request')
+        pic = request.files['pic']
+        if pic.filename == '':
+            return render_template('admin.html', error='No picture uploaded')
+        tags = request.form.get('tags', '').strip()
+        category = request.form.get('category', '').strip()
+        subject = request.form.get('subject', '').strip()
+        if not tags or not category or not subject:
+            return render_template('admin.html', error='Tags, category, and subject are required')
+        filename = secure_filename(pic.filename)
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+        if not ('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
+            return render_template('admin.html', error='Invalid file type. Please upload an image file')
+        existing_image = Img.query.filter_by(name=filename, category=category, subject=subject, tags=tags).first()
+        if existing_image:
+            return render_template('admin.html', error='An image with the same name and details already exists')
+        try:
+            img = Img(img=pic.read(), mimetype=pic.mimetype, category=category, subject=subject, name=filename, tags=tags)
+            db.session.add(img)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return render_template('admin.html', error='Error saving image to database')
+        images = Img.query.all()
+        return render_template('admin.html', images=images)
+    images = Img.query.all()
+    return render_template('admin.html', images=images)
 
 
 if __name__ == "__main__":
-    db.create_all()  # Ensure database tables exist
+    db.create_all()
     app.run(debug=True, port=5001)

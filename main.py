@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import hashlib
 import random
 from email_sender import send_email
+import base64
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
@@ -34,6 +35,11 @@ class Img(db.Model):
     subject = db.Column(db.String(100), nullable=False)
     tags = db.Column(db.String(300), nullable=True)
 
+@app.template_filter('b64encode')
+def b64encode_filter(data):
+    if data:
+        return base64.b64encode(data).decode('utf-8')  # Encode as base64
+    return None
 
 @app.route('/sign_up', methods=["POST", "GET"])
 def sign_up():
@@ -193,6 +199,6 @@ def admin():
 
 
 if __name__ == "__main__":
-    with app.app_context():  # Ensure that the application context is active
-        db.create_all()  # Create the database tables
+    with app.app_context():
+        db.create_all()
     app.run(debug=True, port=5001)
